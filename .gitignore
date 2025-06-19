@@ -310,3 +310,6 @@ dist
 ### Vercel ###
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,intellij+all,nextjs,node,vercel
+
+# clerk configuration (can include secrets)
+/.clerk/

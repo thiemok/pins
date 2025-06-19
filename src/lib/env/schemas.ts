@@ -6,12 +6,16 @@ export const serverSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
+  CLERK_SECRET_KEY: z.string(),
 });
 
 // Client-side environment variables (must be prefixed with NEXT_PUBLIC_)
 export const clientSchema = z.object({
-  // Add client-side env vars here when needed
-  // NEXT_PUBLIC_APP_URL: z.string().url(),
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().url(),
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().url(),
+  NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL: z.string().url(),
+  NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL: z.string().url(),
 });
 
 export type ServerEnv = z.infer<typeof serverSchema>;
