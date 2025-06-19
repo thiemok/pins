@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "bun x vercel env pull && next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
+    "db:generate": "dotenvx run -f .env.local -- drizzle-kit generate",
+    "db:migrate": "dotenvx run -f .env.local -- drizzle-kit migrate",
+    "db:studio": "dotenvx run -f .env.local -- drizzle-kit studio",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
@@ -19,6 +19,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.2",
@@ -31,6 +32,7 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^1.44.2",
     "@eslint/eslintrc": "^3",
     "@eslint/js": "^9.29.0",
     "@tailwindcss/postcss": "^4",
