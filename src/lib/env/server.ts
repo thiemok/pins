@@ -1,3 +1,7 @@
+import { type z } from 'zod';
+
+import { type WithOptionalValues } from '@/lib/types/utils';
+
 import { clientEnv } from './client';
 import { serverSchema } from './schemas';
 
@@ -5,7 +9,8 @@ import { serverSchema } from './schemas';
 const serverProcessEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   NODE_ENV: process.env.NODE_ENV,
-};
+  CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+} satisfies WithOptionalValues<z.infer<typeof serverSchema>>;
 
 const result = serverSchema.safeParse(serverProcessEnv);
 

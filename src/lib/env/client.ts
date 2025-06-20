@@ -1,10 +1,20 @@
+import { type z } from 'zod';
+
+import { type WithOptionalValues } from '@/lib/types/utils';
+
 import { clientSchema } from './schemas';
 
 // Explicitly access each environment variable
 const clientProcessEnv = {
-  // Add client-side env vars here when needed
-  // NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-};
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
+  NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL:
+    process.env.NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL,
+  NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL:
+    process.env.NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL,
+} satisfies WithOptionalValues<z.infer<typeof clientSchema>>;
 
 const result = clientSchema.safeParse(clientProcessEnv);
 

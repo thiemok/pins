@@ -12,10 +12,10 @@ export const serverSchema = z.object({
 // Client-side environment variables (must be prefixed with NEXT_PUBLIC_)
 export const clientSchema = z.object({
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
-  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().url(),
-  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().url(),
-  NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL: z.string().url(),
-  NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL: z.string().url(),
+  NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
+  NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string(),
+  NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL: z.string(),
+  NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL: z.string(),
 });
 
 export type ServerEnv = z.infer<typeof serverSchema>;
