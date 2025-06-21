@@ -1,7 +1,6 @@
-'use client';
+import { useCallback, useEffect, useMemo } from 'react';
 
-import { useCallback, useEffect } from 'react';
-
+import { ShortcutLabel } from '@/components/commands/shortcut-label';
 import {
   CommandDialog,
   CommandEmpty,
@@ -11,7 +10,7 @@ import {
   CommandList,
   CommandShortcut,
 } from '@/components/ui/command';
-import { useCommandRegistry } from '@/lib/commands/command-registry';
+import { useCommandRegistry } from '@/lib/commands/command-registry-context';
 import { type Command } from '@/lib/commands/types';
 
 interface CommandPaletteProps {
@@ -25,39 +24,44 @@ export function CommandPalette({
   onOpenChange,
   filterShortcut,
 }: CommandPaletteProps) {
-  const { commands } = useCommandRegistry();
+  const { getAllCommands } = useCommandRegistry();
+  const commands = getAllCommands();
 
-  const filteredCommands = commands
-    .filter((cmd) => cmd.enabled)
-    .filter((cmd) => {
-      if (filterShortcut) {
-        return cmd.shortcut === filterShortcut;
-      }
-      return true;
-    })
-    .sort((a, b) => {
-      // Sort by category first, then by name
-      if (a.category !== b.category) {
-        return a.category.localeCompare(b.category);
-      }
-      return a.name.localeCompare(b.name);
-    });
+  const { filteredCommands, groupedCommands } = useMemo(() => {
+    const filteredCommands = commands
+      .filter((cmd) => cmd.enabled !== false)
+      .filter((cmd) => {
+        if (filterShortcut) {
+          return cmd.shortcut === filterShortcut;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        // Sort by category first, then by name
+        if (a.category !== b.category) {
+          return a.category.localeCompare(b.category);
+        }
+        return a.name.localeCompare(b.name);
+      });
 
-  const groupedCommands = filteredCommands.reduce(
-    (groups, command) => {
-      if (!groups[command.category]) {
-        groups[command.category] = [];
-      }
-      groups[command.category].push(command);
-      return groups;
-    },
-    {} as Record<string, Command[]>
-  );
+    const groupedCommands = filteredCommands.reduce(
+      (groups, command) => {
+        if (!groups[command.category]) {
+          groups[command.category] = [];
+        }
+        groups[command.category].push(command);
+        return groups;
+      },
+      {} as Record<string, Command[]>
+    );
+
+    return { filteredCommands, groupedCommands };
+  }, [commands, filterShortcut]);
 
   const executeCommand = useCallback(
     (command: Command) => {
-      command.execute();
       onOpenChange(false);
+      command.execute();
     },
     [onOpenChange]
   );
@@ -102,7 +106,6 @@ export function CommandPalette({
                   )}
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      {filterShortcut && `${categoryIndex + 1}. `}
                       {command.name}
                     </div>
                     {command.description && (
@@ -111,8 +114,16 @@ export function CommandPalette({
                       </div>
                     )}
                   </div>
-                  {command.shortcut && !filterShortcut && (
-                    <CommandShortcut>{command.shortcut}</CommandShortcut>
+                  {(command.shortcut || filterShortcut) && (
+                    <CommandShortcut>
+                      <ShortcutLabel
+                        shortcut={
+                          filterShortcut
+                            ? `${categoryIndex + 1}`
+                            : command.shortcut
+                        }
+                      />
+                    </CommandShortcut>
                   )}
                 </div>
               </CommandItem>

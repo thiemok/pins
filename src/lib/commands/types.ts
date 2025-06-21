@@ -7,7 +7,7 @@ export interface Command {
   description?: string;
   icon?: ReactNode;
   shortcut?: string; // keyboardJS format e.g. "cmd+k" or "ctrl+shift+p"
-  enabled: boolean;
+  enabled?: boolean;
   execute: () => void;
 }
 

@@ -1,58 +1,42 @@
-'use client';
+import { bindKeyCombo, unbindKeyCombo } from '@rwh/keystrokes';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useEffect, useState } from 'react';
+import { GlobalCommands } from '@/config/global-commands';
+import { useIsMac } from '@/hooks/use-is-mac';
+import { CommandRegistryProvider } from '@/lib/commands/command-registry-context';
 
 import { CommandPalette } from './command-palette';
 
 export function CommandProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [filterShortcut, setFilterShortcut] = useState<string | undefined>();
+  const isMac = useIsMac();
 
-  useEffect(() => {
-    const handleOpenCommandPalette = (event: CustomEvent) => {
-      setFilterShortcut(event.detail?.filterShortcut);
-      setIsOpen(true);
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Handle Cmd+K / Ctrl+K to open command palette
-      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-        event.preventDefault();
-        setFilterShortcut(undefined);
-        setIsOpen(true);
-      }
-    };
-
-    window.addEventListener(
-      'open-command-palette',
-      handleOpenCommandPalette as EventListener
-    );
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener(
-        'open-command-palette',
-        handleOpenCommandPalette as EventListener
-      );
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+  const onOpenCommandPalette = useCallback((filter?: string) => {
+    setFilterShortcut(filter);
+    setIsOpen(true);
   }, []);
 
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-    if (!open) {
+  useEffect(() => {
+    const combo = isMac ? 'Meta+k' : 'Control+k';
+    bindKeyCombo(combo, ({ finalKeyEvent }) => {
+      finalKeyEvent.preventDefault();
       setFilterShortcut(undefined);
-    }
-  };
+      setIsOpen(true);
+    });
+
+    return () => unbindKeyCombo(combo);
+  }, [isMac]);
 
   return (
-    <>
+    <CommandRegistryProvider onOpenCommandPalette={onOpenCommandPalette}>
       {children}
+      <GlobalCommands />
       <CommandPalette
         open={isOpen}
-        onOpenChange={handleOpenChange}
+        onOpenChange={() => setIsOpen(false)}
         filterShortcut={filterShortcut}
       />
-    </>
+    </CommandRegistryProvider>
   );
 }

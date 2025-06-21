@@ -1,10 +1,8 @@
-'use client';
-
 import { useAuth } from '@clerk/nextjs';
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { useCommand } from '@/lib/commands/command-registry';
+import { useCommand } from '@/lib/commands/command-registry-context';
 
 export function GlobalCommands() {
   const { signOut } = useAuth();
@@ -16,8 +14,7 @@ export function GlobalCommands() {
     category: 'Authentication',
     description: 'Sign out of your account',
     icon: <LogOut className="h-4 w-4" />,
-    shortcut: 'ctrl+shift+q',
-    enabled: true,
+    shortcut: 'Control+Shift+q',
     execute: async () => {
       await signOut();
       // @ts-expect-error -- why next

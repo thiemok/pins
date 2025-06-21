@@ -1,15 +1,38 @@
 'use client';
 
-import keyboardJS from 'keyboardjs';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type Keystrokes } from '@rwh/keystrokes';
 
 import { type Command, type CommandRegistration } from './types';
+
+type ShortcutHandler = Parameters<Keystrokes['bindKeyCombo']>[1];
 
 export class CommandRegistry {
   private commands = new Map<string, Command>();
   private shortcuts = new Map<string, string[]>();
-  private listeners = new Set<() => void>();
+  private listeners: Array<() => void> = [];
+  private handlers = new Map<string, ShortcutHandler>();
   private nextId = 0;
+
+  private onOpenCommandPalette: (filterShortcut?: string) => void;
+  private readonly keystrokes: Keystrokes;
+
+  readonly id: string;
+
+  constructor(
+    id: string,
+    openCommandPalette: typeof this.onOpenCommandPalette,
+    keystrokes: Keystrokes
+  ) {
+    this.id = id;
+    this.onOpenCommandPalette = openCommandPalette;
+    this.keystrokes = keystrokes;
+  }
+
+  shutdown() {
+    this.handlers.forEach((handler, shortcut) => {
+      this.keystrokes.unbindKeyCombo(shortcut, handler);
+    });
+  }
 
   register(registration: CommandRegistration): string {
     const id = `cmd-${this.nextId++}`;
@@ -35,7 +58,6 @@ export class CommandRegistry {
       this.updateShortcutBinding(registration.shortcut);
     }
 
-    this.notifyListeners();
     return id;
   }
 
@@ -54,14 +76,16 @@ export class CommandRegistry {
         }
         if (shortcutCommands.length === 0) {
           this.shortcuts.delete(command.shortcut);
-          keyboardJS.unbind(command.shortcut);
+          this.keystrokes.unbindKeyCombo(
+            command.shortcut,
+            this.handlers.get(command.shortcut)
+          );
+          this.handlers.delete(command.shortcut);
         } else {
           this.updateShortcutBinding(command.shortcut);
         }
       }
     }
-
-    this.notifyListeners();
   }
 
   getCommand(name: string): Command | undefined {
@@ -79,94 +103,58 @@ export class CommandRegistry {
 
   executeCommand(name: string): boolean {
     const command = this.commands.get(name);
-    if (!command || !command.enabled) return false;
+    if (!command || command.enabled === false) return false;
 
     command.execute();
     return true;
   }
 
-  private updateShortcutBinding(shortcut: string): void {
-    keyboardJS.unbind(shortcut);
+  setCommandPaletteHandler(callback: typeof this.openCommandPalette) {
+    this.onOpenCommandPalette = callback;
+  }
 
+  openCommandPalette(filter?: string) {
+    this.onOpenCommandPalette(filter);
+  }
+
+  onCommandUpdate(listener: () => void) {
+    this.listeners.push(listener);
+  }
+
+  offCommandUpdate(listener: () => void) {
+    this.listeners = this.listeners.filter((l) => l !== listener);
+  }
+
+  private updateShortcutBinding(shortcut: string): void {
     const commands = this.getCommandsByShortcut(shortcut);
     if (commands.length === 0) return;
 
-    keyboardJS.bind(shortcut, (e) => {
-      e?.preventDefault();
+    if (!this.handlers.has(shortcut)) {
+      const handler: ShortcutHandler = ({ finalKeyEvent }) => {
+        finalKeyEvent.preventDefault();
+        // Do not reuse commands from outside of this scope,
+        // since we need this to dynamically update without recreating the handler
+        const enabledCommands = this.getCommandsByShortcut(shortcut).filter(
+          (cmd) => cmd.enabled !== false
+        );
 
-      const enabledCommands = commands.filter((cmd) => cmd.enabled);
-      if (enabledCommands.length === 0) return;
+        if (enabledCommands.length === 0) return;
 
-      if (enabledCommands.length === 1) {
-        enabledCommands[0].execute();
-      } else {
-        // Multiple commands with same shortcut - open command palette filtered
-        this.openCommandPalette(shortcut);
-      }
-    });
-  }
-
-  private openCommandPalette(filterShortcut?: string): void {
-    // This will be implemented when we create the command palette
-    const event = new CustomEvent('open-command-palette', {
-      detail: { filterShortcut },
-    });
-    window.dispatchEvent(event);
-  }
-
-  subscribe(listener: () => void): () => void {
-    this.listeners.add(listener);
-    return () => this.listeners.delete(listener);
-  }
-
-  private notifyListeners(): void {
-    this.listeners.forEach((listener) => listener());
-  }
-}
-
-export const commandRegistry = new CommandRegistry();
-
-export function useCommandRegistry() {
-  const [, forceUpdate] = useState(0);
-
-  useEffect(() => {
-    return commandRegistry.subscribe(() => {
-      forceUpdate((prev) => prev + 1);
-    });
-  }, [forceUpdate]);
-
-  return {
-    commands: commandRegistry.getAllCommands(),
-    register: commandRegistry.register.bind(commandRegistry),
-    unregister: commandRegistry.unregister.bind(commandRegistry),
-    execute: commandRegistry.executeCommand.bind(commandRegistry),
-    getCommand: commandRegistry.getCommand.bind(commandRegistry),
-  };
-}
-
-export function useCommand(registration: CommandRegistration) {
-  const commandRef = useRef<string | null>(null);
-
-  const execute = useCallback(() => {
-    if (commandRef.current) {
-      commandRegistry.executeCommand(registration.name);
-    }
-  }, [registration.name]);
-
-  useEffect(() => {
-    try {
-      commandRef.current = commandRegistry.register(registration);
-      return () => {
-        if (commandRef.current) {
-          commandRegistry.unregister(registration.name);
-          commandRef.current = null;
+        if (enabledCommands.length === 1) {
+          enabledCommands[0].execute();
+        } else {
+          // Multiple commands with same shortcut - open command palette filtered
+          this.openCommandPalette(shortcut);
         }
       };
-    } catch (error) {
-      console.warn(`Failed to register command "${registration.name}":`, error);
-      return () => {};
+      this.handlers.set(shortcut, handler);
+      this.keystrokes.bindKeyCombo(shortcut, handler);
     }
-  }, [registration]);
 
-  return { execute };
+    this.notifyListeners();
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach((l) => l());
+  }
 }

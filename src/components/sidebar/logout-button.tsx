@@ -3,7 +3,7 @@
 import { LogOut } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { useCommandRegistry } from '@/lib/commands/command-registry';
+import { useCommandRegistry } from '@/lib/commands/command-registry-context';
 
 export function LogoutButton() {
   const { getCommand } = useCommandRegistry();
