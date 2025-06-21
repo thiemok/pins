@@ -1,4 +1,5 @@
 import { AppSidebarHeader } from '@/components/sidebar/app-sidebar-header';
+import { LogoutButton } from '@/components/sidebar/logout-button';
 import { NavigationGroup } from '@/components/sidebar/navigation-group';
 import { NavigationItem } from '@/components/sidebar/navigation-item';
 import {
@@ -26,7 +27,9 @@ export function AppSidebar() {
           }
         })}
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <LogoutButton />
+      </SidebarFooter>
     </Sidebar>
   );
 }
