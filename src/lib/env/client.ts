@@ -1,4 +1,4 @@
-import { type z } from 'zod';
+import { z } from 'zod/v4';
 
 import { type WithOptionalValues } from '@/lib/types/utils';
 
@@ -29,7 +29,7 @@ const result = clientSchema.safeParse(clientProcessEnv);
 if (!result.success) {
   console.error(
     '❌ Invalid client environment variables:',
-    result.error.format()
+    z.prettifyError(result.error)
   );
   throw new Error('Invalid client environment variables');
 }

@@ -1,4 +1,4 @@
-import { type z } from 'zod';
+import { z } from 'zod/v4';
 
 import { type WithOptionalValues } from '@/lib/types/utils';
 
@@ -17,7 +17,7 @@ const result = serverSchema.safeParse(serverProcessEnv);
 if (!result.success) {
   console.error(
     '❌ Invalid server environment variables:',
-    result.error.format()
+    z.prettifyError(result.error)
   );
   throw new Error('Invalid server environment variables');
 }

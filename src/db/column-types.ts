@@ -1,7 +1,7 @@
 import { customType } from 'drizzle-orm/pg-core';
 
 export const linestring = customType<{
-  data: Array<[x: number, y: number]>;
+  data: Array<[x: number, y: number, ele?: number]>;
   driverData: string;
 }>({
   dataType() {
