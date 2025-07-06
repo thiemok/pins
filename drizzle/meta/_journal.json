@@ -8,6 +8,20 @@
       "when": 1750355078102,
       "tag": "0000_awesome_trauma",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751815890949,
+      "tag": "0001_enable-postgis",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1751821686132,
+      "tag": "0002_add-routes-table",
+      "breakpoints": true
     }
   ]
 }

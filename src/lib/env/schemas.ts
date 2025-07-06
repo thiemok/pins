@@ -11,6 +11,12 @@ export const serverSchema = z.object({
 
 // Client-side environment variables (must be prefixed with NEXT_PUBLIC_)
 export const clientSchema = z.object({
+  /* Vercel */
+  NEXT_PUBLIC_VERCEL_ENV: z
+    .enum(['development', 'preview', 'production'])
+    .default('development'),
+
+  /* Clerk */
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
   NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string(),
   NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string(),
