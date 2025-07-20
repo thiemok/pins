@@ -44,7 +44,7 @@ export async function createRoute(
       name: data.name,
       owner: userId,
       slug: readableId(),
-      track: track.points.map((p) => [p.lat, p.lon, p.ele]),
+      track: track.points.map((p) => [p.lat, p.lon, p.ele, p.time?.getTime()]),
     })
     .returning()
     .onConflictDoUpdate({

@@ -14,7 +14,6 @@ const compat = new FlatCompat({
 
 const eslintConfig = tseslint.config(
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   {
     plugins: {

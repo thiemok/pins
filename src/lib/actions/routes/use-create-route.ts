@@ -3,13 +3,16 @@ import { useMutation } from '@tanstack/react-query';
 import { useMutationResult } from '@/hooks/use-mutation-result';
 import {
   type CreateRouteRequest,
+  type GetRouteResponse,
   getRouteResponseSchema,
 } from '@/lib/actions/routes/schema';
 
 export function useCreateRoute() {
   const mutation = useMutation({
     mutationKey: ['routes'],
-    mutationFn: async (payload: CreateRouteRequest) => {
+    mutationFn: async (
+      payload: CreateRouteRequest
+    ): Promise<GetRouteResponse> => {
       const res = await fetch('/api/routes', {
         method: 'POST',
         body: JSON.stringify(payload),

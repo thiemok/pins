@@ -1,8 +1,7 @@
-import { sql } from 'drizzle-orm';
 import { timestamp } from 'drizzle-orm/pg-core';
 
 export const timestamps = {
-  updated_at: timestamp().$onUpdate(() => sql`NOW()`),
+  updated_at: timestamp().$onUpdate(() => new Date()),
   created_at: timestamp().defaultNow().notNull(),
   deleted_at: timestamp(),
 };

@@ -7,10 +7,15 @@ export const createRouteRequestSchema = z.object({
   track: z.string(),
 });
 
-const pointSchema = z.tuple([z.number(), z.number(), z.number().optional()]);
+const pointSchema = z.tuple([
+  z.number(),
+  z.number(),
+  z.number().optional(),
+  z.number().optional(),
+]);
 
 const trackSchema = z.object({
-  points: z.array(pointSchema),
+  points: z.array(pointSchema.readonly()),
 });
 
 export const getRouteResponseSchema = z.object({

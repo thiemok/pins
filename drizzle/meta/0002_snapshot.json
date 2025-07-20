@@ -1,42 +1,9 @@
 {
-  "id": "8ec3791d-3771-4a26-aa97-76c4b826c5f1",
+  "id": "9aaf1d69-569a-4433-944b-6392137deb63",
   "prevId": "e34d254d-94e3-4006-9ae7-b6325fdeb57b",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.example": {
-      "name": "example",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.routes": {
       "name": "routes",
       "schema": "",
@@ -67,7 +34,7 @@
         },
         "track": {
           "name": "track",
-          "type": "geometry(Linestring, 4326)",
+          "type": "geometry(LinestringZM, 4326)",
           "primaryKey": false,
           "notNull": true
         },

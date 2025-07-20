@@ -3,9 +3,11 @@ CREATE TABLE "routes" (
 	"slug" varchar NOT NULL,
 	"owner" varchar NOT NULL,
 	"name" varchar NOT NULL,
-	"track" geometry(Linestring, 4326) NOT NULL,
+	"track" geometry(LinestringZM, 4326) NOT NULL,
 	"updated_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp,
 	CONSTRAINT "routes_slug_unique" UNIQUE("slug")
 );
+--> statement-breakpoint
+DROP TABLE "example" CASCADE;
