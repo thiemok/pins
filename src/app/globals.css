@@ -4,6 +4,65 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Disable all normal colors */
+  --color-*: initial;
+
+  --color-retro-50: #fffbeb; /* Very light cream */
+  --color-retro-100: #fef3c7; /* Light cream */
+  --color-retro-200: #fed7aa; /* Soft peach */
+  --color-retro-300: #fdba74; /* Light orange */
+  --color-retro-400: #fb923c; /* Medium orange */
+  --color-retro-500: #f97316; /* Primary orange (base) */
+  --color-retro-600: #ea580c; /* Darker orange */
+  --color-retro-700: #c2410c; /* Deep orange */
+  --color-retro-800: #9a3412; /* Very deep orange */
+  --color-retro-900: #7c2d12; /* Dark reddish-orange */
+
+  --color-flame-50: #fef2f2; /* Very light pink */
+  --color-flame-100: #fee2e2; /* Light pink */
+  --color-flame-200: #fecaca; /* Soft coral */
+  --color-flame-300: #fca5a5; /* Light coral */
+  --color-flame-400: #f87171; /* Medium coral */
+  --color-flame-500: #ef4444; /* Primary red (base) */
+  --color-flame-600: #dc2626; /* Darker red */
+  --color-flame-700: #b91c1c; /* Deep red */
+  --color-flame-800: #991b1b; /* Very deep red */
+  --color-flame-900: #7f1d1d; /* Dark burgundy */
+
+  --color-gold-50: #fffdf7; /* Very light gold */
+  --color-gold-100: #fffbeb; /* Light gold */
+  --color-gold-200: #fef3c7; /* Soft gold */
+  --color-gold-300: #fde68a; /* Light golden */
+  --color-gold-400: #fcd34d; /* Medium golden */
+  --color-gold-500: #f59e0b; /* Primary gold (base) */
+  --color-gold-600: #d97706; /* Darker gold */
+  --color-gold-700: #b45309; /* Deep gold */
+  --color-gold-800: #92400e; /* Very deep gold */
+  --color-gold-900: #78350f; /* Dark bronze */
+
+  --color-warm-50: #fafaf9; /* Almost white with warm tint */
+  --color-warm-100: #f5f5f4; /* Very light warm gray */
+  --color-warm-200: #e7e5e4; /* Light warm gray */
+  --color-warm-300: #d6d3d1; /* Medium light warm gray */
+  --color-warm-400: #a8a29e; /* Medium warm gray */
+  --color-warm-500: #78716c; /* Primary warm gray */
+  --color-warm-600: #57534e; /* Darker warm gray */
+  --color-warm-700: #44403c; /* Deep warm gray */
+  --color-warm-800: #292524; /* Very deep warm gray */
+  --color-warm-900: #1c1917; /* Almost black warm */
+
+  --color-bg-lvl-1: var(--color-warm-50);
+  --color-bg-lvl-2: var(--color-warm-100);
+  --color-bg-lvl-3: var(--color-warm-200);
+  --color-bg-lvl-4: var(--color-warm-300);
+  --color-bg-lvl-5: var(--color-warm-400);
+
+  --color-text-lvl-1: var(--color-warm-900);
+  --color-text-lvl-2: var(--color-warm-800);
+  --color-text-lvl-3: var(--color-warm-700);
+  --color-text-lvl-4: var(--color-warm-600);
+  --color-text-lvl-5: var(--color-warm-500);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -79,6 +138,18 @@
 }
 
 .dark {
+  --color-bg-lvl-1: #0c0a09;
+  --color-bg-lvl-2: var(--color-warm-900);
+  --color-bg-lvl-3: var(--color-warm-800);
+  --color-bg-lvl-4: var(--color-warm-700);
+  --color-bg-lvl-5: var(--color-warm-500);
+
+  --color-text-lvl-1: var(--color-warm-50);
+  --color-text-lvl-2: var(--color-warm-100);
+  --color-text-lvl-3: var(--color-warm-200);
+  --color-text-lvl-4: var(--color-warm-300);
+  --color-text-lvl-5: var(--color-warm-400);
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -116,6 +187,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

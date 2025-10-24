@@ -13,7 +13,7 @@ export default clerkMiddleware(
     contentSecurityPolicy: {
       strict: true,
       directives: {
-        'img-src': '*.tile.openstreetmap.org',
+        'img-src': '*.tile.openstreetmap.org data:',
       },
     },
   }
